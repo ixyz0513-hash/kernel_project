@@ -1,9 +1,0 @@
-megs: 1
-cpu: count=1, ips=8000000, reset_on_triple_fault=0
-romimage: file=$BXSHARE/BIOS-bochs-latest
-vgaromimage: file=$BXSHARE/VGABIOS-elpin-2.40
-floppya: 1_44=hello.bin, status=inserted
-boot: floppy
-display_library: win32
-vga: extension=none
-clock: sync=realtime
