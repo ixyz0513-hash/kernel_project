@@ -84,6 +84,71 @@ pop bp
 
 ret 4
 
+
+strcmp:
+	push bp
+	mov bp,sp
+
+	push ax
+	push bx
+	push cx
+	push dx
+	push si
+	push di
+    
+	mov byte [TRUE_FALSE_STRCMP], 0
+    xor ax,ax
+	xor bx,bx
+
+	mov ax, [bp + 6]
+	mov bx, [bp + 4]
+
+	push ax
+	call strlen
+	mov dx, [lengthstring]
+
+	push bx
+	call strlen
+	mov cx, [lengthstring]
+
+	cmp dx,cx
+	jne .breaks
+
+	mov si, [bp + 6]
+	mov di, [bp + 4]
+
+	.loop:
+    mov al, [si]
+	mov bl, [di]
+
+
+	cmp al,0x0
+	je .success
+
+	cmp al,bl
+    jne .breaks
+    
+	inc si
+	inc di
+	jmp .loop
+
+	.success:
+	mov byte [TRUE_FALSE_STRCMP], 1
+    
+	.breaks:
+	pop di
+	pop si
+    pop dx
+	pop cx
+	pop bx
+	pop ax
+	pop bp
+
+	ret 4
+
+    
+
+
 TURNUPPER_CASE: 
       push bp
 	  mov bp,sp

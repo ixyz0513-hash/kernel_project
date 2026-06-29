@@ -35,10 +35,8 @@ times 510 - ($ - $$) db 0
 dw 0xAA55
 
 
-section .text
 
-
-%include "macros.inc"
+%include "macros.asm"
 
 
 
@@ -65,12 +63,19 @@ sector2:
    call SCROLLDOWN
    call SPLIT_SCREEN
    
+   VERTRET_CHECK
    call DISABLE_MOUSE
+   
    NEWLINE
+   VERTRET_CHECK
    call DISABLE_KEYBOARD
+   VERTRET_CHECK
    call CHECK_KEYBOARD
+   VERTRET_CHECK
    call ENABLE_KEYBOARD
+   VERTRET_CHECK
    call CHECK_KEYBOARD_INTERFACE
+   
    
    mov al, 1
    mov bl, 12
@@ -128,8 +133,7 @@ sector2:
    .loop:
    call TYPE_KEYBOARD
    jmp .loop
-   
-      
+     
    
    finish:
    cli
@@ -138,24 +142,22 @@ sector2:
 
 
    
-%include "str.inc"
+%include "str.asm"
 
-%include "graphics.inc"
+%include "graphics.asm"
 
-%include "scrolling.inc"
+%include "scrolling.asm"
 
-%include "lines.inc"
+%include "lines.asm"
 
-%include "printing.inc"
+%include "printing.asm"
 
-%include "cursorunderline.inc"
+%include "cursorunderline.asm"
 
-%include "seqfunc.inc"
+%include "seqfunc.asm"
 
-%include "ps2.inc"
+%include "ps2.asm"
 
-
-section .data
 
 val2 db 'Hello',0
 val3 db ' world.',0
@@ -167,7 +169,7 @@ debugval_bad db 'Bad',0
 
 debughigh db 'high',0
 debuglow db 'low',0
-debugdata db 'data',0
+debugdata db 'data',0  
 debugclock db 'clock',0
 
 valcpy db '                                                                                                             ',0 ; used in strcat to combine two variables into one
@@ -199,6 +201,7 @@ WHEN_SCROLLSCREENUP dw 0
 TRUE_FALSE db 0 ; just a bool
 TRUE_FALSE2 db 0 ; just a bool
 IFRIGHT_CORNER db 0
+TRUE_FALSE_STRCMP db 0 ; just a bool used in strcmp
 
 
 CHANGECHARACTER db 0 ; a bool if 0 dont change the al if 1 change it
@@ -208,8 +211,8 @@ CHARACTER_NUMBER2 db 179 ; ascii
 IFGRAPHICS_MODE db 0 ; checks if graphics mode
 
 
-shiftmode db 0
-capslock db 0
+shiftmode db 0 ; checks if user is holding shift
+capslock db 0 ; check if user touched capslock
 
 
 ; below data ports and index ones

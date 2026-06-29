@@ -104,12 +104,14 @@ SPLIT_SCREEN:
    
    
 DRAW_WINDOW_FRAME:
-
-   mov byte [CHANGECHARACTER], 1
+   
+   
+   mov byte [CHANGECHARACTER],1
    
    call DRAWOUTLINE_RECTANGLE
    
    mov byte [CHANGECHARACTER],0
+   
    ret
    
    
@@ -181,24 +183,21 @@ DRAWOUTLINE_RECTANGLE:
 	cmp cx, [NUMBERSCROLL]
 	jg .breaks
 
-    mov [slowTemporary1], dx
+	mov [slowTemporary1], dx
 	call DRAWHORIZONTALLINE
-    mov dx,cx
-	call DRAWVERTICALLINE
-	mov [temporary4], bx	
-	mov [temporary1], bx
-	
-	sub dx,bx
-	cmp dx,0
-	jle .breaks
-	cmp dx,[NUMBERSCROLL]
-	jg .breaks
-	
-	add [temporary1], dx
-	mov bx, [temporary1]
+	mov [temporary4], bx
+    
+	mov dx,cx
+	sub dx, bx
+	add bx, dx
 	mov dx, [slowTemporary1]
+
+
 	call DRAWHORIZONTALLINE
-	
+    
+	mov dx, cx
+	mov bx, [temporary4]
+	call DRAWVERTICALLINE
 	
 	mov [temporary1],cx
 	mov bx, [temporary4]
@@ -211,8 +210,12 @@ DRAWOUTLINE_RECTANGLE:
 	
 	add ax,[slowTemporary1]
 	mov dx, [temporary1]
-	add dx,1
 	mov byte [IFRIGHT_CORNER], 1
+	cmp byte [CHANGECHARACTER], 1
+	je .jmp2
+    add dx,1
+
+    .jmp2:
 	call DRAWVERTICALLINE
 	
     mov byte [IFRIGHT_CORNER],0
@@ -306,6 +309,7 @@ DRAWVERTICALLINE:
 	mov di, [cursor_position]
 	mov al, [CHARACTER_NUMBER2]
 	mov [CHARACTER_NUMBER],al
+	
     cmp byte [CHANGECHARACTER], 0
 	je .jmp
 	
@@ -325,7 +329,6 @@ DRAWVERTICALLINE:
 	dec cx
 	
 	.jmp:
-	
 	CHANGECOLOR_IFTRUE
 	
 	.loop:
@@ -335,10 +338,15 @@ DRAWVERTICALLINE:
 	dec cx
 	add di,158
     jmp .loop
+
+	
+		
 	
 	
-	cmp byte [CHANGECHARACTER], 0
-	je .breaks
+	.breaks:
+
+    cmp byte [CHANGECHARACTER], 0
+	je .jmp4
 	
 	cmp byte [IFRIGHT_CORNER], 1
 	je .right2
@@ -350,10 +358,9 @@ DRAWVERTICALLINE:
 
     
     .jmp3:
-    stosw	
-	
-	
-	.breaks:
+    stosw
+
+    .jmp4:
 	mov cx,[temporary2]
 	mov [cursor_y], cx
 	

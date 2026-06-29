@@ -1,6 +1,4 @@
 
-
-
 %macro CHANGECOLOR_IFTRUE 0
 
     cmp byte [CHANGECHARACTER], 1
@@ -111,7 +109,10 @@
 	  
 	  xor di,di
 	  mov bx, [resolutionModeX]
-	  mov ax, [resolutionModeY]
+	  mov ax, [NUMBERSCROLL]
+	  mov [temporary1], ax
+	  add word [temporary1], 1
+	  mov ax, [temporary1]
 	  mul bx
 	  mov bx,ax
 	  mov cx, bx
@@ -153,7 +154,7 @@ push ax
 mov word [cursor_x],0
 mov ax, [NUMBERSCROLL]
 cmp [cursor_y], ax
-jg %%scroll
+jge %%scroll
 
 mov word [TRUE_FALSE2], 0
 inc word [cursor_y]
