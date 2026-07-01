@@ -95,6 +95,7 @@ PRINT:
     push ax
 	push si
 	push di
+	push bx
 	
 	CURSOR_POSITION
 	mov al,0x0
@@ -114,6 +115,7 @@ PRINT:
 	
     .breaks:
 	call CURSOR_GO
+	pop bx
 	pop di
 	pop si
 	pop ax

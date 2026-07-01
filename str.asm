@@ -100,20 +100,6 @@ strcmp:
     xor ax,ax
 	xor bx,bx
 
-	mov ax, [bp + 6]
-	mov bx, [bp + 4]
-
-	push ax
-	call strlen
-	mov dx, [lengthstring]
-
-	push bx
-	call strlen
-	mov cx, [lengthstring]
-
-	cmp dx,cx
-	jne .breaks
-
 	mov si, [bp + 6]
 	mov di, [bp + 4]
 

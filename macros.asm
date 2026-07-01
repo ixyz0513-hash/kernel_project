@@ -1,3 +1,32 @@
+%macro DEBUG_PRINT 0
+       push bp
+	   mov bp,sp
+
+	   push [bp + 6]
+	   push [bp + 4]
+	   call strcat
+	   push valcpy
+	   call PRINT
+
+	   pop bp
+
+%endmacro
+
+
+%macro WINDOW_OR_RECTANGLE 0
+       
+	   cmp byte [TRUE_FALSE_WINDOW], 1
+	   jne %%jmp1
+       call DRAW_WINDOW_FRAME
+	   jmp %%breaks
+
+	   %%jmp1:
+	   call DRAWOUTLINE_RECTANGLE
+
+	   %%breaks:
+       
+%endmacro
+
 
 %macro CHANGECOLOR_IFTRUE 0
 
@@ -18,6 +47,7 @@
 
 %macro TYPES 0
     push ax
+	push bx
 	
 	cmp word [shiftmode],1
 	je %%shift
@@ -32,9 +62,13 @@
 	mov al, [shift_map + bx]
 	
 	%%jump:
+    mov bx, word [string_length]
+	mov [string_type + bx], al
+	inc [string_length]
     mov ah, [current_color]
     stosw
-	
+
+	pop bx
     pop ax
 %endmacro
 
@@ -131,8 +165,6 @@
 %macro INTRO 0
 	mov word [cursor_x],0
 	mov word [cursor_y],10
-	push val4
-    call PRINT
 	mov word [cursor_x],0
 	mov word [cursor_y],12
 %endmacro
@@ -179,6 +211,7 @@ pop ax
 push ax
 push bx
 
+
 mov bx, [resolutionModeX]
 dec bx
 
@@ -212,6 +245,22 @@ pop ax
 %macro NEWLINE 0
 
 CHECKIF_SCROLLDOWN
+call CURSOR_GO
+
+%endmacro
+
+%macro NEWLINECLI 0
+	NEWLINE
+	push arrow
+	call PRINT
+	mov word [cursor_x], 3
+	call CURSOR_GO
+%endmacro
+
+%macro NEWLINEUP 0
+
+CHECKIF_SCROLLUP
+mov word [cursor_x], 0
 call CURSOR_GO
 
 %endmacro

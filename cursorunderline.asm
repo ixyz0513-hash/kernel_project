@@ -115,20 +115,20 @@ push bx
 
 CURSOR_POSITION
 
-mov dx,0x3D4
+mov dx,CRTC_INDEX_PORT
 mov al,0x0E
 out dx,al
 
 
-mov dx,0x3D5
+mov dx,CRTC_DATA_PORT
 mov al,bh
 out dx,al
 
-mov dx,0x3D4
+mov dx,CRTC_INDEX_PORT
 mov al,0x0F
 out dx,al
 
-mov dx,0x3D5
+mov dx,CRTC_DATA_PORT
 mov al, bl
 out dx,al
 

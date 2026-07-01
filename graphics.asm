@@ -101,6 +101,7 @@ SPLIT_SCREEN:
    pop dx
    pop ax
    ret
+
    
    
 DRAW_WINDOW_FRAME:
@@ -116,27 +117,29 @@ DRAW_WINDOW_FRAME:
    
    
    
-DRAWFILLED_RECTANGLE:
+DRAWFILLED_WINDOW:
     push ax ; x1
 	push bx ; y1
 	push dx ; x2
 	push cx ; y2
 
     
-	call DRAWOUTLINE_RECTANGLE
+	WINDOW_OR_RECTANGLE
 	
 	push ax
 	push bx
 	push dx
 	push cx 
 	
+	cmp byte [TRUE_FALSE_WINDOW], 1
+	je .jmp
+
 	add bl,1
 	sub cl,1
 	add al,1
 	add dl,1
 	
-	
-	
+	.jmp:
 	mov ah,dl
 	mov bh,cl
 	
@@ -155,9 +158,7 @@ DRAWFILLED_RECTANGLE:
 	pop bx
 	pop ax
 	
-
-	call DRAWOUTLINE_RECTANGLE
-
+   	WINDOW_OR_RECTANGLE
    
     .breaks:
 	pop cx

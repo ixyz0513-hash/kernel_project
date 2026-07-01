@@ -35,6 +35,9 @@ TYPE_KEYBOARD:
    
    mov di, [cursor_position]
    movsx bx,al
+
+   cmp al,0x3A
+   je .caps
    
    cmp al,0x0E
    je .back_slash
@@ -47,9 +50,9 @@ TYPE_KEYBOARD:
    
    cmp al,0x36
    je .shift
-   
-   cmp al,0x3A
-   je .caps
+
+   cmp al,0x48
+   je .uparrow
    
    jmp .jump
    
@@ -62,7 +65,10 @@ TYPE_KEYBOARD:
    .enter:
    call ENTERS
    jmp .breaks
-   
+
+   .uparrow:
+   call UPARROW
+   jmp .breaks
    
    .shift:
    mov word [shiftmode], 1
@@ -81,6 +87,7 @@ TYPE_KEYBOARD:
    .false:
    mov word [capslock], 0
    jmp .breaks
+
    
    .jump:
    TYPES
@@ -99,13 +106,10 @@ TYPE_KEYBOARD:
    cmp al, 0xB6
    je .shiftbreak
    
-   jmp .jump3
+   jmp .breaks
    
    .shiftbreak:
    mov word [shiftmode], 0
-   
-   .jump3:
-   jmp .check_keyboard
    
    
    .breaks:
@@ -118,19 +122,61 @@ TYPE_KEYBOARD:
    
    
 BACK_SLASH:
-    
+   push ax
+   push di
+   push bx
+
+   cmp byte [string_length],0
+   jne .jmp
+   call DECREMENTMOUSEXY
+   jmp .breaks
+   
+   .jmp:
 	call DECREMENTMOUSEXY
 	call CURSOR_POSITION_POP
+
 	mov di, [cursor_position]
-	TYPES
+	mov ah, [current_color]
+   mov al, 0x0
+   stosw
+
+   mov bx, word [string_length]
+   mov byte [string_type + bx], 0x0
+   dec byte [string_length]
+
+   
+
 	call DECREMENTMOUSEXY
+   
+   .breaks:
+   pop bx
+   pop di
+   pop ax
 	ret   
    
    
 ENTERS:
+   push bx
+   mov bx, word [string_length]
+   mov byte [string_type + bx], 0x0
+   mov byte [string_length], 0x0
    
-   NEWLINE
+   push string_type
+   call CLI
+
+
    
+   pop bx
+   ret
+   
+
+UPARROW:
+   cmp word [cursor_y], 10
+   jle .breaks
+   
+   NEWLINEUP
+   
+   .breaks:
    ret
    
 DISABLE_MOUSE:
@@ -248,33 +294,25 @@ CHECK_KEYBOARD_INTERFACE:
    .lowclock:
    push debugclock
    push debuglow
-   call strcat
-   push valcpy
-   call PRINT
+   DEBUG_PRINT
    jmp .breaks
    
    .highclock:
    push debugclock
    push debughigh
-   call strcat
-   push valcpy
-   call PRINT
+   DEBUG_PRINT
    jmp .breaks
    
    .lowdata:
    push debugdata
    push debuglow
-   call strcat
-   push valcpy
-   call PRINT
+   DEBUG_PRINT
    jmp .breaks
    
    .highdata:
    push debugdata
    push debughigh
-   call strcat
-   push valcpy
-   call PRINT
+   DEBUG_PRINT
    jmp .breaks
    
    .breaks:
