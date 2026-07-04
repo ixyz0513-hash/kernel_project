@@ -1,6 +1,6 @@
+global KEYBOARD_HANDLER
 
-
-TYPE_KEYBOARD:
+KEYBOARD_HANDLER:
    push ax
    push bx
    push di
@@ -8,21 +8,6 @@ TYPE_KEYBOARD:
    xor bx,bx
    xor ax,ax
    xor di,di
-   
-   in al, DATA_PORT
-   
-   .check_keyboard:
-   in al, CONTROL_STATUS_REGISTER
-   
-   
-   mov bl,al
-   and bl, 0x20
-   test bl,0x20
-   jnz .check_keyboard
-   
-   test al,0x1
-   jz .check_keyboard
-   
    
    in al,DATA_PORT
    test al,0x80
@@ -113,10 +98,15 @@ TYPE_KEYBOARD:
    
    
    .breaks:
+   xor ax,ax
+
+   mov al,0x20
+   out MASTER_DATA, al
+
    pop di
    pop bx
    pop ax
-   ret
+   iret
    
    
    
@@ -163,7 +153,8 @@ ENTERS:
    
    push string_type
    call CLI
-
+   
+   
 
    
    pop bx
@@ -171,10 +162,8 @@ ENTERS:
    
 
 UPARROW:
-   cmp word [cursor_y], 10
-   jle .breaks
    
-   NEWLINEUP
+   ;NEWLINEUP dont comment it out since its you will be always in the cli
    
    .breaks:
    ret

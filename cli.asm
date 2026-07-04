@@ -16,7 +16,7 @@ CLI:
 
     .cmp:
     cmp word [command_handler + bx], 0
-    je .breaks
+    je .unkown
 
     push ax
     push si
@@ -37,6 +37,13 @@ CLI:
     add ax,cx
     add bx,2
     jmp .cmp
+
+
+    .unkown:
+    NEWLINE
+    push message
+    call PRINT
+    NEWLINECLI
     
 
     .breaks:
@@ -51,10 +58,24 @@ CLI:
 
 
 clear_handler:
+    push ax
+    mov ax,28
+
     CLEAR_SCREEN
     mov word [cursor_x],0
     mov word [cursor_y],9
     NEWLINECLI
+
+    cmp ax, word [NUMBERSCROLL]
+    je .breaks
+
+    .loop:
+    call SCROLLSCREENUP
+    cmp ax, word [NUMBERSCROLL]
+    jg .loop
+
+    .breaks:
+    pop ax
     ret
 
 
@@ -108,3 +129,47 @@ echo_handler:
     NEWLINECLI
     pop ax
     ret
+
+
+
+time_handler:
+
+    NEWLINE
+
+    push system_seconds_str
+    call PRINT
+
+    push word [SYSTEM_SECONDS]
+    call itoa
+    push bufferstring
+    call PRINT
+
+    NEWLINECLI
+
+    ret
+
+
+beep_handler:
+    push ax
+    push bx
+
+    call SOUND_SET
+
+    call PIT_SETUP
+
+    mov al, 0XFF
+    mov bl, 0xFF
+    call SOUND
+
+
+    mov ax,10
+    call WAIT_TICKS
+
+    call STOP_SOUND
+
+    NEWLINECLI
+    pop bx
+    pop ax
+    ret
+
+

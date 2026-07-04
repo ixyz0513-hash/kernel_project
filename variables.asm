@@ -1,8 +1,11 @@
+
+
 val2 db 'Hello',0
 val3 db ' world.',0
 kernel_version db 'version kernel 0.1',0
-message db 'HI OMG HI THIS IS TESTING LINE COMPARE OK OK',0
+message db 'Unkown command',0
 arrow db '-->',0
+
 
 debugval_good db 'Good',0
 debugval_bad db 'Bad',0
@@ -11,6 +14,9 @@ debughigh db 'high',0
 debuglow db 'low',0
 debugdata db 'data',0  
 debugclock db 'clock',0
+
+
+system_seconds_str db 'system seconds: ',0
 
 valcpy db '                                                                                                             ',0 ; used in strcat to combine two variables into one
 bufferstring db 0,0,0,0,0,0,0,0 ; used in itoa function to store  number chars
@@ -55,9 +61,14 @@ IFGRAPHICS_MODE db 0 ; checks if graphics mode
 shiftmode db 0 ; checks if user is holding shift
 capslock db 0 ; check if user touched capslock
 
-
 string_type db '                     ',0 ; used in for storing typed keys
-string_length db 0
+string_length dw 0
+
+
+align 16
+SYSTEM_TICKS dw 0
+SYSTEM_SECONDS dw 0
+align 16
 
 
 ; below data ports and index ones
@@ -79,6 +90,22 @@ ADDRESS_LOW_START equ 0x0D
 
 CONTROL_STATUS_REGISTER equ 0x64
 DATA_PORT equ 0x60
+
+MASTER_DATA equ 0x20
+MASTER_READ_DATA equ 0x21
+
+SLAVE_DATA equ 0xA0
+SLAVE_READ_DATA equ 0xA1
+
+CHANNEL_0 equ 0x40
+CHANNEL_2 equ 0x42
+CHANNEL_WRITE_0_2 equ 0x43
+SYSTEM_PORT_B equ 0x61
+
+
+NON_MASKABLE_INTERRUPT equ 0xA0 ; 0x80 to enable, 0x0 to disable
+
+
 
 
 keyboard_map:
@@ -129,6 +156,8 @@ commands_strings: ; cmp for cli.asm
     db 'help',0
     db 'ver',0
     db 'echo ',0
+    db 'time',0
+    db 'beep',0
     db 0
 
 
@@ -139,4 +168,6 @@ command_handler: ; the actual functions for this will be in cli.asm
     dw help_handler
     dw ver_handler
     dw echo_handler
+    dw time_handler
+    dw beep_handler
     dw 0

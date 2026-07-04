@@ -58,6 +58,13 @@ sector2:
    xor di,di
    xor si,si
    sti
+   call DISABLE_KEYBOARD
+   VERTRET_CHECK
+   call PIT_SETUP
+   call START_UP_PIC
+   call VECTOR_TABLE_SETUP
+   call SELECT_CHANNEL_0
+   
    
    CLEAR_SCREEN
    call SCROLLDOWN
@@ -68,13 +75,10 @@ sector2:
    
    NEWLINE
    VERTRET_CHECK
-   call DISABLE_KEYBOARD
-   VERTRET_CHECK
+   
    call CHECK_KEYBOARD
    VERTRET_CHECK
-   call ENABLE_KEYBOARD
-   VERTRET_CHECK
-   call CHECK_KEYBOARD_INTERFACE
+   
    
    
    mov al, 1
@@ -93,14 +97,16 @@ sector2:
    mov byte [TRUE_FALSE_WINDOW],1
    call DRAWFILLED_WINDOW
    
-   .loop:
-   call TYPE_KEYBOARD
-   jmp .loop
-     
+   call ENABLE_KEYBOARD
+   VERTRET_CHECK
+
+   call STOP_SOUND
+   call SELECT_CHANNEL_2
    
-   finish:
-   cli
+   sti
+   .finish:
    hlt
+   jmp .finish
 
 
 
@@ -122,6 +128,10 @@ sector2:
 %include "cli.asm"
 
 %include "ps2.asm"
+
+%include "pic.asm"
+
+%include "pit.asm"
 
 %include "variables.asm"
 	

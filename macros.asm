@@ -64,7 +64,7 @@
 	%%jump:
     mov bx, word [string_length]
 	mov [string_type + bx], al
-	inc [string_length]
+	inc word [string_length]
     mov ah, [current_color]
     stosw
 
