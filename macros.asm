@@ -237,30 +237,3 @@ call CURSOR_GO
 pop bx
 pop ax
 %endmacro
-
-
-
-
-
-%macro NEWLINE 0
-
-CHECKIF_SCROLLDOWN
-call CURSOR_GO
-
-%endmacro
-
-%macro NEWLINECLI 0
-	NEWLINE
-	push arrow
-	call PRINT
-	mov word [cursor_x], 3
-	call CURSOR_GO
-%endmacro
-
-%macro NEWLINEUP 0
-
-CHECKIF_SCROLLUP
-mov word [cursor_x], 0
-call CURSOR_GO
-
-%endmacro

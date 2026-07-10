@@ -1,5 +1,3 @@
-
-
 CLEAR_REGION:
     push ax
 	push bx
@@ -9,15 +7,29 @@ CLEAR_REGION:
 	
 	xor di,di
 	
+	push ax
+	movzx ax,al
+	cmp ax, [resolutionModeX]
+	jg .breaks
+	pop ax
+
+	push ax
+    movzx ax,ah
+	cmp ax, [resolutionModeX]
+	jg .breaks
+	pop ax
+    
+	push bx
+	movzx bx,bl
+	cmp bx, [NUMBERSCROLL]
+	jg .breaks
+	pop bx
 	
-	cmp al, [resolutionModeX]
+	push bx
+	movzx bx,bh
+	cmp bx, [NUMBERSCROLL]
 	jg .breaks
-	cmp bl, [NUMBERSCROLL]
-	jg .breaks
-	cmp ah, [resolutionModeX]
-	jg .breaks
-	cmp bh, [NUMBERSCROLL]
-	jg .breaks
+	pop bx
 	
 	
 	xor dx,dx

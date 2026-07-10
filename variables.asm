@@ -5,6 +5,7 @@ val3 db ' world.',0
 kernel_version db 'version kernel 0.1',0
 message db 'Unkown command',0
 arrow db '-->',0
+mess db 'a',0
 
 
 debugval_good db 'Good',0
@@ -27,7 +28,7 @@ cursor_x dw 0
 cursor_position dw 0 ; used to determine the position of the underline cursor
 
 current_color dw 0x7E ; used in clearscreen macro
-temporary_color dw 0 ; color used in functions like filled rectangle just drawing stuff in general that is not involved with the clear screen macro
+temporary_color dw 0x30 ; color used in functions like filled rectangle just drawing stuff in general that is not involved with the clear screen macro
 shadow_color dw 0x80 ; used in the draw shadow function
 
 temporary1 dw 0 ; used in storing temporary values
@@ -39,6 +40,8 @@ slowTemporary2 dw 0 ; only use in nested functions
 
 resolutionModeX dw 80
 resolutionModeY dw 25
+move_cursor_x_times db 1
+move_cursor_y_times db 1
 
 HOWMUCHSCROLL dw 0 ; in scrollscreendown you add 80 to it to scroll down one row because the text mode has 80 collumns and after that another row in scrollscreenup it compares it by 0 if it already did scrollscreendown if not it goes to the break label otherwise it substracts it by 80 
 NUMBERSCROLL dw 18 ; a number for printing and newline macro when to scrolldown when you scroll down it increments it scroll screen up then decrements it
@@ -61,7 +64,7 @@ IFGRAPHICS_MODE db 0 ; checks if graphics mode
 shiftmode db 0 ; checks if user is holding shift
 capslock db 0 ; check if user touched capslock
 
-string_type db '                     ',0 ; used in for storing typed keys
+string_type db '                                   ',0 ; used in for storing typed keys
 string_length dw 0
 
 

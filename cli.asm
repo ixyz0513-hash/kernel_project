@@ -40,10 +40,10 @@ CLI:
 
 
     .unkown:
-    NEWLINE
+    call NEWLINE
     push message
     call PRINT
-    NEWLINECLI
+    call NEWLINECLI
     
 
     .breaks:
@@ -64,7 +64,7 @@ clear_handler:
     CLEAR_SCREEN
     mov word [cursor_x],0
     mov word [cursor_y],9
-    NEWLINECLI
+    call NEWLINECLI
 
     cmp ax, word [NUMBERSCROLL]
     je .breaks
@@ -94,7 +94,7 @@ help_handler:
     cmp byte [commands_strings + bx], 0x0
     je .breaks
 
-    NEWLINE 
+    call NEWLINE 
     push ax
     call PRINT
     push ax
@@ -104,29 +104,29 @@ help_handler:
     jmp .loop
 
     .breaks:
-    NEWLINECLI
+    call NEWLINECLI
     pop bx
     pop ax
     ret
 
 ver_handler:
-    NEWLINE
+    call NEWLINE
     push kernel_version
     call PRINT
-    NEWLINECLI
+    call NEWLINECLI
     ret
 
 
 echo_handler:
     push ax
-    NEWLINE
+    call NEWLINE
 
     mov ax, string_type
     add ax, 5
     push ax
     call PRINT
 
-    NEWLINECLI
+    call NEWLINECLI
     pop ax
     ret
 
@@ -134,7 +134,7 @@ echo_handler:
 
 time_handler:
 
-    NEWLINE
+    call NEWLINE
 
     push system_seconds_str
     call PRINT
@@ -144,7 +144,7 @@ time_handler:
     push bufferstring
     call PRINT
 
-    NEWLINECLI
+    call NEWLINECLI
 
     ret
 
@@ -162,12 +162,12 @@ beep_handler:
     call SOUND
 
 
-    mov ax,10
+    mov ax,30
     call WAIT_TICKS
 
     call STOP_SOUND
 
-    NEWLINECLI
+    call NEWLINECLI
     pop bx
     pop ax
     ret

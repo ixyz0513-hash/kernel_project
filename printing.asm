@@ -1,6 +1,3 @@
-
-
-
 PRINT_STRING_CENTER:
     push bp
 	mov bp,sp

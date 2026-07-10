@@ -12,7 +12,7 @@ CURSOR_POSITION_POP:
    ret
 
 
-HIGHLIGHT_TEXT:
+HIGHLIGHT_TEXT: ; dont use its bad
     push ax
 	push bx
 	push di
@@ -21,17 +21,17 @@ HIGHLIGHT_TEXT:
 	
 	mov di, [cursor_position]
 	
-	mov al, [es:di]
+	mov al, [di]
 	cmp al, 0x0
 	je .breaks
 	cmp al, 0x20
 	je .breaks
 	
 	add di,1
-	mov ah, [es:di]
+	mov ah, [di]
 	or ah,192
 	and ah,207
-	mov [es:di], ah
+	mov [di], ah
     
 	.breaks:
 	pop di
@@ -41,7 +41,7 @@ HIGHLIGHT_TEXT:
 	
 
 
-UNHIGHLIGHT_TEXT:
+UNHIGHLIGHT_TEXT: ; dont use its bad
     push ax
 	push bx
 	push di
@@ -71,11 +71,13 @@ UNHIGHLIGHT_TEXT:
 
 INCREMENTMOUSEXY:
 push ax
+push bx
 
 mov ax, [resolutionModeX]
 dec ax
 
-inc word [cursor_x]
+movzx bx, byte [move_cursor_x_times]
+add [cursor_x],bx
 cmp word [cursor_x], ax
 jg .incerY
 jmp .breaks
@@ -84,6 +86,7 @@ jmp .breaks
 CHECKIF_SCROLLDOWN
 
 .breaks:
+pop bx
 pop ax
 
 ret
@@ -93,7 +96,9 @@ ret
 DECREMENTMOUSEXY:
 push ax
 
-sub word [cursor_x],1
+movzx ax, byte [move_cursor_x_times]
+sub word [cursor_x],ax
+
 jnc .breaks
 
 .decY:

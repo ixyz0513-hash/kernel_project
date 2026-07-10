@@ -73,7 +73,7 @@ sector2:
    VERTRET_CHECK
    call DISABLE_MOUSE
    
-   NEWLINE
+   call NEWLINE
    VERTRET_CHECK
    
    call CHECK_KEYBOARD
@@ -88,13 +88,12 @@ sector2:
    INTRO
    call CURSOR_GO
 
-   NEWLINECLI
+   call NEWLINECLI
 
    mov ax,50
    mov dx,60
    mov bx, 10
    mov cx, 15
-   mov byte [TRUE_FALSE_WINDOW],1
    call DRAWFILLED_WINDOW
    
    call ENABLE_KEYBOARD
@@ -102,6 +101,7 @@ sector2:
 
    call STOP_SOUND
    call SELECT_CHANNEL_2
+   
    
    sti
    .finish:
@@ -132,6 +132,8 @@ sector2:
 %include "pic.asm"
 
 %include "pit.asm"
+
+%include "newline.asm"
 
 %include "variables.asm"
 	
