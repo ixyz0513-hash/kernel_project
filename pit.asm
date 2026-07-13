@@ -113,15 +113,14 @@ STOP_SOUND:
 
 
 
-WAIT_SECOND:
+WAIT_SECONDS:
     push ax
-    xor ax,ax
 
     add ax, word [SYSTEM_SECONDS]
-    inc ax
     
     .loop:
     cmp ax, word [SYSTEM_SECONDS]
+    hlt
     jne .loop
 
     pop ax

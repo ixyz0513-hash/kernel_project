@@ -3,8 +3,8 @@
 
 
 start:
-    cli
-    xor ax,ax
+  cli
+  xor ax,ax
 	mov ds,ax
 	mov es, ax
 	mov sp, 0x7c00
@@ -60,13 +60,16 @@ sector2:
    sti
    call DISABLE_KEYBOARD
    VERTRET_CHECK
-   call PIT_SETUP
+
    call START_UP_PIC
    call VECTOR_TABLE_SETUP
    call SELECT_CHANNEL_0
+   call SELECT_CHANNEL_2
+
+   call BOOT
    
    
-   CLEAR_SCREEN
+   SETCOLOR 0x7E
    call SCROLLDOWN
    call SPLIT_SCREEN
    
@@ -98,9 +101,6 @@ sector2:
    
    call ENABLE_KEYBOARD
    VERTRET_CHECK
-
-   call STOP_SOUND
-   call SELECT_CHANNEL_2
    
    
    sti
@@ -132,6 +132,8 @@ sector2:
 %include "pic.asm"
 
 %include "pit.asm"
+
+%include "boot.asm"
 
 %include "newline.asm"
 

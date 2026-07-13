@@ -8,6 +8,9 @@ CLI:
     push cx
     push si
     push ax
+
+    cmp word [string_length], 1
+    jle .unkown
     
     xor dx,dx
     xor ax,ax
@@ -75,7 +78,7 @@ clear_handler:
     push ax
     mov ax,28
 
-    CLEAR_SCREEN
+    call CLEAR_SCREEN
     mov word [cursor_y],9
     call NEWLINECLI
 

@@ -153,13 +153,12 @@ ENTERS:
    push bx
    mov bx, word [string_length]
    mov byte [string_type + bx], 0x0
-   mov byte [string_length], 0x0
+   
    
    push string_type
    call CLI
-   
-   
 
+   mov byte [string_length], 0x0
    
    pop bx
    ret

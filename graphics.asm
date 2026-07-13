@@ -1,3 +1,33 @@
+CLEAR_SCREEN:
+      push ax
+	  push bx
+	  push cx
+	  push di
+	  
+	  xor di,di
+	  mov bx, [resolutionModeX]
+	  mov ax, [NUMBERSCROLL]
+	  mov [temporary1], ax
+	  add word [temporary1], 7
+	  mov ax, [temporary1]
+	  mul bx
+	  mov bx,ax
+	  mov cx, bx
+	  mov al, 0x0
+	  mov ah, [current_color]
+	  
+	  rep stosw
+	  
+	  
+	  pop di
+	  pop cx
+	  pop bx
+	  pop ax
+	  ret
+
+
+
+
 DRAW_SHADOW:
     push ax
 	push bx

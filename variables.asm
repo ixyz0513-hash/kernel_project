@@ -5,7 +5,7 @@ val3 db ' world.',0
 kernel_version db 'version kernel 0.1',0
 message db 'Unkown command',0
 arrow db '-->',0
-mess db 'a',0
+bootmessage db 'Hello this is the kernel hahaha :)',0
 
 
 debugval_good db 'Good',0
