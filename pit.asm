@@ -70,6 +70,21 @@ SOUND:
     ret
 
 
+BEEP:
+    call SOUND_SET
+
+    call PIT_SETUP
+
+    
+    call SOUND
+    
+    mov ax,cx
+    call WAIT_TICKS
+
+    call STOP_SOUND
+
+    ret
+
 
 SOUND_SET:
     push ax

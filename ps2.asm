@@ -119,6 +119,10 @@ BACK_SLASH:
    cmp byte [string_length],0
    jne .jmp
    call DECREMENTMOUSEXY
+   mov al, 0XFF
+   mov bl, 0xFF
+   mov cx, 10
+   call BEEP
    jmp .breaks
    
    .jmp:

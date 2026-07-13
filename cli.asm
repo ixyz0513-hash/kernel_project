@@ -3,11 +3,13 @@ CLI:
     push bp
     mov bp,sp
     
+    push dx
     push bx
     push cx
     push si
     push ax
     
+    xor dx,dx
     xor ax,ax
     mov ax, commands_strings
     mov si, [bp + 4]
@@ -18,10 +20,20 @@ CLI:
     cmp word [command_handler + bx], 0
     je .unkown
 
+    cmp dx, 3
+    je .jmp
+
+    push si
+    push ax
+    call strcmp
+    jmp .jmp2
+
+    .jmp:
     push ax
     push si
     call strcmp
-    
+
+    .jmp2:
     cmp byte [TRUE_FALSE_STRCMP], 1
     jne .getlength
     
@@ -34,6 +46,7 @@ CLI:
     call strlen
     mov cx, [lengthstring]
     inc cx
+    inc dx
     add ax,cx
     add bx,2
     jmp .cmp
@@ -51,6 +64,7 @@ CLI:
     pop si
     pop cx
     pop bx
+    pop dx
     pop bp
 
     ret 2
@@ -62,7 +76,6 @@ clear_handler:
     mov ax,28
 
     CLEAR_SCREEN
-    mov word [cursor_x],0
     mov word [cursor_y],9
     call NEWLINECLI
 
@@ -72,7 +85,7 @@ clear_handler:
     .loop:
     call SCROLLSCREENUP
     cmp ax, word [NUMBERSCROLL]
-    jg .loop
+    jne .loop
 
     .breaks:
     pop ax
@@ -83,7 +96,6 @@ help_handler:
     push ax
     push bx
 
-    
     xor bx,bx
     
 
@@ -152,22 +164,17 @@ time_handler:
 beep_handler:
     push ax
     push bx
-
-    call SOUND_SET
-
-    call PIT_SETUP
+    push cx
+    xor ax,ax
+    xor bx,bx
 
     mov al, 0XFF
     mov bl, 0xFF
-    call SOUND
-
-
-    mov ax,30
-    call WAIT_TICKS
-
-    call STOP_SOUND
+    mov cx, 30
+    call BEEP
 
     call NEWLINECLI
+    pop cx
     pop bx
     pop ax
     ret
