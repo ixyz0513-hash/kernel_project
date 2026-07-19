@@ -57,9 +57,6 @@ START_UP_PIC:
 
 
 
-
-
-
 VECTOR_TABLE_SETUP:
     cli
 

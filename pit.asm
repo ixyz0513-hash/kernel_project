@@ -13,6 +13,9 @@ PIT_HANDLER:
     .seconds:
     mov word [SYSTEM_TICKS], 0 
     inc word [SYSTEM_SECONDS]
+    cmp byte [IF_BOOT_ENDED],0
+    je .breaks
+    call DISPLAY_TIME
 
     
     .breaks:
@@ -114,6 +117,7 @@ STOP_SOUND:
 
 
 WAIT_SECONDS:
+    MASK_KEYBOARD
     push ax
 
     add ax, word [SYSTEM_SECONDS]
@@ -124,12 +128,15 @@ WAIT_SECONDS:
     jne .loop
 
     pop ax
+    UN_MASK_EVERYTHING
     ret
 
 
 WAIT_TICKS:
+    MASK_KEYBOARD
     push ax
     push bx
+
 
     mov bx, 100
     sub bx,ax
@@ -151,5 +158,6 @@ WAIT_TICKS:
     .breaks:
     pop bx
     pop ax
+    UN_MASK_EVERYTHING
     ret
     

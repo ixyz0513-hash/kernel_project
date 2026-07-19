@@ -23,7 +23,7 @@ CLI:
     cmp word [command_handler + bx], 0
     je .unkown
 
-    cmp dx, 3
+    cmp dx, 3 ; doing this so echo gets accepted just a bandage to the wound
     je .jmp
 
     push si

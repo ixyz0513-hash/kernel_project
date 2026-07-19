@@ -1,7 +1,9 @@
 strlen:
-push bp
+	push bp
     mov bp,sp
-pusha
+
+	pusha
+	
     xor cx,cx
     mov si,[bp + 4]
     
@@ -171,6 +173,7 @@ TURNLOWER_CASE:
 	  lodsb
 	  test al,al
 	  jz .breaks
+
 	  cmp al,'A'
 	  jnae .loop
 	  cmp al,'Z'

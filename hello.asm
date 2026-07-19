@@ -58,13 +58,14 @@ sector2:
    xor di,di
    xor si,si
    sti
-   call DISABLE_KEYBOARD
-   VERTRET_CHECK
+   MASK_KEYBOARD
 
    call START_UP_PIC
    call VECTOR_TABLE_SETUP
    call SELECT_CHANNEL_0
    call SELECT_CHANNEL_2
+
+   call ENABLE16_COLORSBACKGROUND
 
    call BOOT
    
@@ -92,17 +93,14 @@ sector2:
    call CURSOR_GO
 
    call NEWLINECLI
+   
+   UN_MASK_EVERYTHING
+   mov word [cursor_x], 3
+   mov word [string_length],0 ; dont know why but it bugs out so cursor_x is at 4 maybe some character is typed before it masks the keyboard? but im just going to do this
+   call CURSOR_GO
 
-   mov ax,50
-   mov dx,60
-   mov bx, 10
-   mov cx, 15
-   call DRAWFILLED_WINDOW
-   
-   call ENABLE_KEYBOARD
-   VERTRET_CHECK
-   
-   
+   call DISPLAY_TIME
+
    sti
    .finish:
    hlt
@@ -136,6 +134,8 @@ sector2:
 %include "boot.asm"
 
 %include "newline.asm"
+
+%include "visuals.asm"
 
 %include "variables.asm"
 	

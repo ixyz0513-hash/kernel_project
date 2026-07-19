@@ -112,17 +112,23 @@ KEYBOARD_HANDLER:
    
    
 BACK_SLASH:
+   MASK_KEYBOARD
    push ax
    push di
    push bx
 
    cmp byte [string_length],0
    jne .jmp
+
    call DECREMENTMOUSEXY
    mov al, 0XFF
    mov bl, 0xFF
    mov cx, 10
    call BEEP
+
+   mov ax,50
+   call WAIT_TICKS
+
    jmp .breaks
    
    .jmp:
@@ -146,6 +152,7 @@ BACK_SLASH:
    pop bx
    pop di
    pop ax
+   UN_MASK_EVERYTHING
 	ret   
    
    
@@ -158,7 +165,7 @@ ENTERS:
    push string_type
    call CLI
 
-   mov byte [string_length], 0x0
+   mov word [string_length], 0x0
    
    pop bx
    ret

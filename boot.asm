@@ -16,6 +16,8 @@ BOOT:
     mov ax, 3
     call WAIT_SECONDS
 
+    mov byte [IF_BOOT_ENDED], 1
+
     pop cx
     pop bx
     pop ax

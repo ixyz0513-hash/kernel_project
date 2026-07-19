@@ -171,15 +171,18 @@ DRAWFILLED_WINDOW:
 	.jmp:
 	mov ah,dl
 	mov bh,cl
+
+	
 	
 	mov cx, [temporary_color]
 	
-	mov [temporary1], cx
-	add word [temporary_color],0x10
+	mov [slowTemporary1], cx
+	mov cx, [shadow_color]
+	mov [temporary_color], cx
 	
 	call CLEAR_REGION
     
-    mov cx, [temporary1]
+    mov cx, [slowTemporary1]
 	mov [temporary_color], cx
 	
 	pop cx

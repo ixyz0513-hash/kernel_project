@@ -28,7 +28,7 @@ cursor_x dw 0
 cursor_position dw 0 ; used to determine the position of the underline cursor
 
 current_color dw 0x7E ; used in clearscreen macro
-temporary_color dw 0x30 ; color used in functions like filled rectangle just drawing stuff in general that is not involved with the clear screen macro
+temporary_color dw 0x5 ; color used in functions like filled rectangle just drawing stuff in general that is not involved with the clear screen macro
 shadow_color dw 0x80 ; used in the draw shadow function
 
 temporary1 dw 0 ; used in storing temporary values
@@ -52,6 +52,7 @@ TRUE_FALSE2 db 0 ; just a bool
 IFRIGHT_CORNER db 0
 TRUE_FALSE_STRCMP db 0 ; just a bool used in strcmp
 TRUE_FALSE_WINDOW db 0 ; if 1 draw window else draw rectangle
+IF_BOOT_ENDED db 0 ; if boot ended call displaytime every 1 second
 
 
 CHANGECHARACTER db 0 ; a bool if 0 dont change the al if 1 change it

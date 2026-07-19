@@ -150,6 +150,36 @@ call CLEAR_SCREEN
 
 
 
+%macro MASK_KEYBOARD 0
+
+    push ax
+    mov al, 0xFE
+    out MASTER_READ_DATA, al
+    pop ax
+
+%endmacro
+
+%macro UN_MASK_EVERYTHING 0
+
+    push ax
+    mov al, 0xFC
+    out MASTER_READ_DATA, al
+    pop ax
+
+%endmacro
+
+
+%macro MASK_PIT 0
+
+	push ax
+    mov al, 0xFD
+    out MASTER_READ_DATA, al
+    pop ax
+
+%endmacro
+
+
+
 
 
 %macro CHECKIF_SCROLLDOWN 0
