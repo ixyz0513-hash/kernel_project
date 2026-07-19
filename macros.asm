@@ -169,16 +169,6 @@ call CLEAR_SCREEN
 %endmacro
 
 
-%macro MASK_PIT 0
-
-	push ax
-    mov al, 0xFD
-    out MASTER_READ_DATA, al
-    pop ax
-
-%endmacro
-
-
 
 
 
