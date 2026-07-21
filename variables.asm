@@ -53,6 +53,7 @@ IFRIGHT_CORNER db 0
 TRUE_FALSE_STRCMP db 0 ; just a bool used in strcmp
 TRUE_FALSE_WINDOW db 0 ; if 1 draw window else draw rectangle
 IF_BOOT_ENDED db 0 ; if boot ended call displaytime every 1 second
+IF_NEGATIVE db 0 ; if negative the string_into_integer function will substract 
 
 
 CHANGECHARACTER db 0 ; a bool if 0 dont change the al if 1 change it
@@ -162,6 +163,8 @@ commands_strings: ; cmp for cli.asm
     db 'echo ',0
     db 'time',0
     db 'beep',0
+    db 'add ',0
+    db 'sub ',0
     db 0
 
 
@@ -174,4 +177,6 @@ command_handler: ; the actual functions for this will be in cli.asm
     dw echo_handler
     dw time_handler
     dw beep_handler
+    dw add_handler
+    dw sub_handler
     dw 0

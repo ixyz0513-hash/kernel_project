@@ -91,6 +91,7 @@ clear_handler:
     jne .loop
 
     .breaks:
+    call DISPLAY_TIME
     pop ax
     ret
 
@@ -180,6 +181,14 @@ beep_handler:
     pop cx
     pop bx
     pop ax
+    ret
+
+
+add_handler:
+    ret
+
+
+sub_handler:
     ret
 
 

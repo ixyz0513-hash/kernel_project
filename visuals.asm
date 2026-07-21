@@ -8,8 +8,8 @@ DISPLAY_TIME:
 
    mov ax,50
    mov dx,79
-   mov bx,10
-   mov cx,14
+   mov bx,0
+   mov cx,4
    call DRAWFILLED_WINDOW
 
    mov ax, [current_color]
@@ -18,7 +18,7 @@ DISPLAY_TIME:
    mov [current_color],ax
 
    mov ax, 51
-   mov bx, 12
+   mov bx, 2
    push system_seconds_str
    call PRINT_STRING_AT
 
@@ -27,7 +27,7 @@ DISPLAY_TIME:
    call itoa
 
    mov ax,67 ; HAHAHAHAH SO FUNNY :( 
-   mov bx,12
+   mov bx,2
    push bufferstring
    call PRINT_STRING_AT
 

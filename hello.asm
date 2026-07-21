@@ -94,12 +94,25 @@ sector2:
 
    call NEWLINECLI
    
-   UN_MASK_EVERYTHING
-   mov word [cursor_x], 3
+   
+   mov word [cursor_x],10
    mov word [string_length],0 ; dont know why but it bugs out so cursor_x is at 4 maybe some character is typed before it masks the keyboard? but im just going to do this
    call CURSOR_GO
 
+   mov word [SYSTEM_TICKS],0
+   mov word [SYSTEM_SECONDS],0
+
    call DISPLAY_TIME
+   UN_MASK_EVERYTHING
+
+   push word [cursor_x]
+   call itoa
+   push bufferstring
+   call TURN_STRING_INTO_NUMBER
+   push ax
+   call itoa
+   push bufferstring
+   call PRINT
 
    sti
    .finish:
@@ -136,6 +149,8 @@ sector2:
 %include "newline.asm"
 
 %include "visuals.asm"
+
+%include "math.asm"
 
 %include "variables.asm"
 	
