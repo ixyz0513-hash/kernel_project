@@ -2,7 +2,7 @@
 
 val2 db 'Hello',0
 val3 db ' world.',0
-kernel_version db 'version kernel 0.1',0
+kernel_version db 'version kernel 0.11',0
 message db 'Unkown command',0
 arrow db '-->',0
 bootmessage db 'Hello this is the kernel hahaha :)',0
@@ -15,7 +15,6 @@ debughigh db 'high',0
 debuglow db 'low',0
 debugdata db 'data',0  
 debugclock db 'clock',0
-
 
 system_seconds_str db 'system seconds: ',0
 
@@ -53,7 +52,13 @@ IFRIGHT_CORNER db 0
 TRUE_FALSE_STRCMP db 0 ; just a bool used in strcmp
 TRUE_FALSE_WINDOW db 0 ; if 1 draw window else draw rectangle
 IF_BOOT_ENDED db 0 ; if boot ended call displaytime every 1 second
-IF_NEGATIVE db 0 ; if negative the string_into_integer function will substract 
+IF_NEGATIVE db 0 ; if true the string_into_integer function will substract
+FROM_CLI db 0 ; if true the end_character will be 0x20(space)
+ADDS db 0  ; if 1 add
+SUBSTRACT db 0 ; if 1 substract
+MULTIPLY db 0 ; if 1 multiply
+DIVIDE db 0 ; if 1 divide
+CHECK_STOPWATCH db 0 ; set by stopwatch_handler to make the pit check time_wait
 
 
 CHANGECHARACTER db 0 ; a bool if 0 dont change the al if 1 change it
@@ -68,11 +73,13 @@ capslock db 0 ; check if user touched capslock
 
 string_type db '                                   ',0 ; used in for storing typed keys
 string_length dw 0
+end_character db 0x0
 
 
 align 16
 SYSTEM_TICKS dw 0
 SYSTEM_SECONDS dw 0
+TIME_WAIT dw 0 ; WHEN TO BEEP SET BY STOPWATCH
 align 16
 
 
@@ -145,7 +152,7 @@ shift_map:
     db 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0, '|', 'Z', 'X', 'C', 'V'
     
     ; 0x30 - 0x3F
-    db 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0
+    db 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, 0x20, 0, 0, 0, 0, 0, 0
     
     ; 0x40 - 0x4F
     db 0, 0, 0, 0, 0, 0, 0, '7', 0, '9', '-', 0, '5', 0, '+', '1'
@@ -160,11 +167,11 @@ commands_strings: ; cmp for cli.asm
     db 'clear',0
     db 'help',0
     db 'ver',0
-    db 'echo ',0
+    db 'echo',0
     db 'time',0
     db 'beep',0
-    db 'add ',0
-    db 'sub ',0
+    db 'calc',0
+    db 'stopwatch',0
     db 0
 
 
@@ -177,6 +184,6 @@ command_handler: ; the actual functions for this will be in cli.asm
     dw echo_handler
     dw time_handler
     dw beep_handler
-    dw add_handler
-    dw sub_handler
+    dw calc_handler
+    dw stopwatch_handler
     dw 0

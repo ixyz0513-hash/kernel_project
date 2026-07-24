@@ -119,16 +119,7 @@ BACK_SLASH:
 
    cmp byte [string_length],0
    jne .jmp
-
    call DECREMENTMOUSEXY
-   mov al, 0XFF
-   mov bl, 0xFF
-   mov cx, 10
-   call BEEP
-
-   mov ax,50
-   call WAIT_TICKS
-
    jmp .breaks
    
    .jmp:
@@ -173,7 +164,7 @@ ENTERS:
 
 UPARROW:
    
-   ;NEWLINEUP dont comment it out since its you will be always in the cli
+   ;call NEWLINEUP dont comment it out since you will be always in the cli
    
    .breaks:
    ret

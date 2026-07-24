@@ -10,18 +10,34 @@ TURN_STRING_INTO_NUMBER:
     xor ax,ax
     xor cx,cx
 
+    cmp byte [FROM_CLI],1
+    jne .jmp
+    mov byte [end_character],0x20
+
+
+    .jmp:
     mov si, [bp + 4]
     mov bx,10
     push si
     call strlen
+
+    cmp [si], '-'
+    jne .jmp2
+    mov byte [IF_NEGATIVE],1
+    inc si
+    dec word [lengthstring]
+    
+    .jmp2:
     cmp word [lengthstring],0
     je .breaks
+
+    
 
     add cx,1
     sub word [lengthstring],1
     
     cmp word [lengthstring],0
-    je .jmp2
+    je .loop
 
     .loo:
     imul cx,bx
@@ -29,15 +45,10 @@ TURN_STRING_INTO_NUMBER:
     
     cmp word [lengthstring],0
     jne .loo
-    
-    .jmp2:
-    cmp [si], '-'
-    jne .loop
-    mov byte [IF_NEGATIVE],1
-    inc si
 
-    .loop:
-    cmp [si], 0x0
+   .loop:
+    mov dx, word [end_character]
+    cmp [si], dx
     je .breaks
     
     push ax
@@ -64,13 +75,14 @@ TURN_STRING_INTO_NUMBER:
     
     .breaks:
     cmp byte [IF_NEGATIVE],1
-    jne .jmp
+    jne .jmp3
     neg ax
 
-    .jmp:
+    .jmp3:
+    mov byte [end_character],0x0
     pop si
     pop cx
     pop dx
     pop bx
     pop bp
-    ret
+    ret 2

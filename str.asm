@@ -3,14 +3,14 @@ strlen:
     mov bp,sp
 
 	pusha
-	
+
     xor cx,cx
     mov si,[bp + 4]
     
 	.loop:
 	lodsb
-	test al,al
-	jz .breaks
+	cmp al,[end_character]
+	je .breaks
     inc cx
 	jmp .loop
 		

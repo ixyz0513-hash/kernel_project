@@ -13,14 +13,33 @@ PIT_HANDLER:
     .seconds:
     mov word [SYSTEM_TICKS], 0 
     inc word [SYSTEM_SECONDS]
+
+
     cmp byte [IF_BOOT_ENDED],0
     je .breaks
+    VERTRET_CHECK
     call DISPLAY_TIME
 
     
     .breaks:
     mov al,0x20
     out MASTER_DATA, al
+
+    cmp byte [CHECK_STOPWATCH],0
+    je .jmp
+    mov ax, [SYSTEM_SECONDS]
+    cmp [TIME_WAIT],ax
+    je .equal
+    jmp .jmp
+
+    .equal:
+    mov byte [CHECK_STOPWATCH],0
+    mov al, 0XFF
+    mov bl, 0xFF
+    mov cx, 10
+    call BEEP
+
+    .jmp:
     popf
     pop ax
     iret
