@@ -12,42 +12,38 @@ else
 
 if($null -eq $cmd1)
 {
+    Write-host "installing nasm"
     if($IsLinux) 
     {
-        Write-host "installing nasm"
         sudo apt install nasm
     }
 
     elseif($IsMacOS) 
     {
-        Write-host "installing nasm"
         brew install nasm
     }
 
     elseif($IsWindows) 
     {
-        Write-host "installing nasm"
         winget install NASM.NASM
     }
 }
 
 if($null -eq $cmd2) 
 {
+    Write-host "installing qemu"
     if($IsLinux) 
     {
-        Write-host "installing qemu"
         sudo apt install qemu-system-x86
     }
 
     elseif($IsMacOS) 
     {
-        Write-host "installing qemu"
         brew install qemu
     }
 
     elseif($IsWindows) 
     {
-        Write-host "installing qemu"
         winget install SoftwareFreedomConservancy.QEMU
     }
 }
