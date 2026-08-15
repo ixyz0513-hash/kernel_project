@@ -38,10 +38,10 @@ CLEAR_BUTTONS: ; not finished yet
     jne .loop
 
     movzx si, byte [current_button]
-    mov [buttons_position_x1 + si],0
-    mov [buttons_position_x2 + si],0
-    mov [buttons_position_y1 + si],0
-    mov [buttons_position_y2 + si],0
+    mov word [buttons_position_x1 + si],0
+    mov word [buttons_position_x2 + si],0
+    mov word [buttons_position_y1 + si],0
+    mov word [buttons_position_y2 + si],0
 
     add byte [current_button],2
     jmp .loop

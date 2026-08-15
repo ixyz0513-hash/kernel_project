@@ -21,7 +21,7 @@ TURN_STRING_INTO_NUMBER:
     push si
     call strlen
 
-    cmp [si], '-'
+    cmp byte [si], '-'
     jne .jmp2
     mov byte [IF_NEGATIVE],1
     inc si

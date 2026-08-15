@@ -1,13 +1,17 @@
 %macro DEBUG_PRINT 0
        push bp
 	   mov bp,sp
+	   push si
+	   mov si,[bp + 6]
+	   push si
+	   mov si,[bp + 4]
+	   push si
 
-	   push [bp + 6]
-	   push [bp + 4]
 	   call strcat
 	   push valcpy
 	   call PRINT
 
+	   pop si
 	   pop bp
 
 %endmacro
