@@ -84,23 +84,6 @@
 %endmacro
 
 
-%macro CURSOR_POSITION 0
-  
-    xor ax,ax
-	mov ax, [cursor_y]
-    mov bx, [resolutionModeX]
-    mul bx
-    add ax, [cursor_x]
-    mov bx,ax
-	
-    mov [cursor_position], bx
-	IFGRAPHICS_MODE_SHIFT
-%endmacro
-
-
-
-
-
 
 %macro VERTRET_CHECK 0
     push dx
@@ -153,7 +136,7 @@ call CLEAR_SCREEN
 %macro MASK_KEYBOARD 0
 
     push ax
-    mov al, 0xFE
+    mov al, 0xFA
     out MASTER_READ_DATA, al
     pop ax
 
@@ -162,7 +145,7 @@ call CLEAR_SCREEN
 %macro UN_MASK_EVERYTHING 0
 
     push ax
-    mov al, 0xFC
+    mov al, 0xF8
     out MASTER_READ_DATA, al
     pop ax
 

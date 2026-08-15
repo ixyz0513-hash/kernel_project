@@ -1,3 +1,6 @@
+SEQ_INDEX_PORT  equ 0x3C4
+SEQ_DATA_PORT   equ 0x3C5
+
 
 TURNSCREEN_OFF:
       push dx

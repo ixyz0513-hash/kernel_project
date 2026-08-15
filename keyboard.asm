@@ -1,14 +1,37 @@
-global KEYBOARD_HANDLER
+CAPS_LOCK equ 0x3A
+BACK_SLASHs equ 0x0E
+ENTERs equ 0x1C
+SHIFT_LEFT equ 0x2A
+SHIFT_RIGHT equ 0x36
+UP_ARROW equ 0x48
+
+shiftmode db 0 ; checks if user is holding shift
+capslock db 0 ; check if user touched capslock
+
 
 KEYBOARD_HANDLER:
+   cli
    push ax
    push bx
    push di
+   pushf
    
    xor bx,bx
    xor ax,ax
    xor di,di
-   
+
+   in al,CONTROL_STATUS_REGISTER
+   test al,0x20
+   jnz .clear
+   jmp .jmp
+
+   .clear:
+   call POLL_DATA_PORT
+   call POLL_DATA_PORT
+   call POLL_DATA_PORT
+   jmp .breaks
+
+   .jmp:
    in al,DATA_PORT
    test al,0x80
    jnz .release
@@ -21,22 +44,22 @@ KEYBOARD_HANDLER:
    mov di, [cursor_position]
    movsx bx,al
 
-   cmp al,0x3A
+   cmp al,CAPS_LOCK
    je .caps
    
-   cmp al,0x0E
+   cmp al,BACK_SLASHs
    je .back_slash
    
-   cmp al,0x1C
+   cmp al,ENTERs
    je .enter
    
-   cmp al,0x2A
+   cmp al,SHIFT_LEFT
    je .shift
    
-   cmp al,0x36
+   cmp al,SHIFT_RIGHT
    je .shift
 
-   cmp al,0x48
+   cmp al,UP_ARROW
    je .uparrow
    
    jmp .jump
@@ -106,6 +129,8 @@ KEYBOARD_HANDLER:
    pop di
    pop bx
    pop ax
+   popf
+   sti
    iret
    
    
@@ -168,31 +193,17 @@ UPARROW:
    
    .breaks:
    ret
-   
-DISABLE_MOUSE:
-   push ax
-   
-   in al, DATA_PORT
-   xor al,al
-   
-   mov al, 0xA7
-   out CONTROL_STATUS_REGISTER, al
-   
-   pop ax
-   ret
-   
+
+
+
+CHECK_OUTPUT_BUFFER:
+   in al,CONTROL_STATUS_REGISTER
+   and al,1
+   jnz .breaks
+   in al,DATA_PORT
    
 
-ENABLE_MOUSE:
-   push ax
-   
-   in al, DATA_PORT
-   xor al,al
-  
-   mov al, 0xA8
-   out CONTROL_STATUS_REGISTER, al
-   
-   pop ax
+   .breaks:
    ret
    
    
@@ -200,8 +211,7 @@ ENABLE_MOUSE:
 DISABLE_KEYBOARD:
    push ax
    
-   in al, DATA_PORT
-   xor al,al
+   call CHECK_OUTPUT_BUFFER
 
    mov al, 0xAD
    out CONTROL_STATUS_REGISTER, al
@@ -215,8 +225,7 @@ DISABLE_KEYBOARD:
 ENABLE_KEYBOARD:
    push ax
    
-   in al, DATA_PORT
-   xor al,al
+   call CHECK_OUTPUT_BUFFER
 
    mov al, 0xAE
    out CONTROL_STATUS_REGISTER, al
@@ -225,17 +234,15 @@ ENABLE_KEYBOARD:
    ret
    
    
-CHECK_KEYBOARD:
+CHECK_CONTROLER:
+   cli
    push ax
-   
-   in al, DATA_PORT
-   xor al,al
-   
 
+   call CHECK_OUTPUT_BUFFER
 
    mov al, 0xAA
    out CONTROL_STATUS_REGISTER, al
-   in al, DATA_PORT
+   call POLL_DATA_PORT
    cmp al, 0x55
    jnz .BAD
    
@@ -250,6 +257,7 @@ CHECK_KEYBOARD:
    
    .breaks:
    pop ax
+   sti
    ret
    
    
@@ -259,13 +267,12 @@ CHECK_KEYBOARD:
 CHECK_KEYBOARD_INTERFACE:
    push ax
    
-   in al, DATA_PORT
-   xor al,al
+   call CHECK_OUTPUT_BUFFER
    
    
    mov al, 0xAB
    out CONTROL_STATUS_REGISTER, al
-   in al, DATA_PORT
+   call POLL_DATA_PORT
    
    cmp al, 0x1
    jz .lowclock
@@ -309,3 +316,44 @@ CHECK_KEYBOARD_INTERFACE:
    pop ax
    ret
    
+
+
+keyboard_map:
+    ; 0x00 - 0x0F
+    db 0, 0, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 0, 0
+    
+    ; 0x10 - 0x1F
+    db 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', 0, 0, 'a', 's'
+    
+    ; 0x20 - 0x2F
+    db 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", '`', 0, '\', 'z', 'x', 'c', 'v'
+    
+    ; 0x30 - 0x3F
+    db 'b', 'n', 'm', ',', '.', '/', 0, '*', 0, ' ', 0, 0, 0, 0, 0, 0
+    
+    ; 0x40 - 0x4F
+    db 0, 0, 0, 0, 0, 0, 0, '7', 0, '9', '-', 0, '5', 0, '+', '1'
+    
+    ; 0x50 - 0x56
+    db 0, '3', '0', '.', 0, 0, '\'
+	
+
+
+shift_map:
+    ; 0x00 - 0x0F
+    db 0, 0, '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 0, 0
+    
+    ; 0x10 - 0x1F
+    db 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', 0, 0, 'A', 'S'
+    
+    ; 0x20 - 0x2F
+    db 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0, '|', 'Z', 'X', 'C', 'V'
+    
+    ; 0x30 - 0x3F
+    db 'B', 'N', 'M', '<', '>', '?', 0, '*', 0, 0x20, 0, 0, 0, 0, 0, 0
+    
+    ; 0x40 - 0x4F
+    db 0, 0, 0, 0, 0, 0, 0, '7', 0, '9', '-', 0, '5', 0, '+', '1'
+    
+    ; 0x50 - 0x56
+    db 0, '3', '0', '.', 0,0, '\'

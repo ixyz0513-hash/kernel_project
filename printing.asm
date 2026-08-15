@@ -36,53 +36,53 @@ PRINT_STRING_CENTER:
 
 
 PRINT_STRING_AT:
-     push bp
-	 mov bp,sp
+    push bp
+	mov bp,sp
 	 
-     push ax
-	 push bx
-	 push di
-	 push dx
-	 push si
+    push ax
+	push bx
+	push di
+	push dx
+	push si
 	 
-	 xor di,di
+	xor di,di
      
-	 cmp ax, [resolutionModeX]
-	 jg .breaks
-	 cmp bx, [NUMBERSCROLL]
-	 jg .breaks
+	cmp ax, [resolutionModeX]
+	jg .breaks
+	cmp bx, [NUMBERSCROLL]
+	jg .breaks
 	 
-	 mov [temporary1], ax
+	mov [temporary1], ax
 	 
-	 mov ax, bx
-	 mov bx, [resolutionModeX]
-	 mul bx
-	 add ax, [temporary1]
+	mov ax, bx
+	mov bx, [resolutionModeX]
+	mul bx
+	add ax, [temporary1]
 	 
-	 cmp word [IFGRAPHICS_MODE], 1
-	 je .jump
-	 shl ax, 1
-	 .jump:
+	cmp word [IFGRAPHICS_MODE], 1
+	je .jump
+	shl ax, 1
+	.jump:
 	 
-      add di,ax
-	  mov si, [bp + 4]
-	  SETAL_AH_CURRENT
+    add di,ax
+	mov si, [bp + 4]
+	SETAL_AH_CURRENT
 	  
-	  .loop:
-	  lodsb
-	  test al,al
-	  jz .breaks
-	  stosw
-	  jmp .loop
+	.loop:
+	lodsb
+	test al,al
+	jz .breaks
+	stosw
+	jmp .loop
      
-	 .breaks:
-	 pop si
-	 pop dx
-	 pop di
-	 pop bx
-	 pop ax
-	 pop bp
-	 ret 2
+	.breaks:
+	pop si
+	pop dx
+    pop di
+	pop bx
+	pop ax
+	pop bp
+	ret 2
 
 
 PRINT:
@@ -94,12 +94,10 @@ PRINT:
 	push di
 	push bx
 	
-	CURSOR_POSITION
-	mov al,0x0
-	mov ah, [current_color]
+	call CURSOR_POSITION
 	mov di, [cursor_position]
+	mov ah, [current_color]
     mov si, [bp + 4]
-	
 	
    .loop:
 	lodsb
@@ -117,9 +115,6 @@ PRINT:
 	pop si
 	pop ax
 	pop bp
-	
-	
-	
 	
 	ret 2
 	

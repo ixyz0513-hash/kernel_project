@@ -18,7 +18,6 @@ CLEAR_SCREEN:
 	  
 	  rep stosw
 	  
-	  
 	  pop di
 	  pop cx
 	  pop bx
@@ -122,11 +121,6 @@ SPLIT_SCREEN:
    and al,191
    out dx,al
    
-   mov bx,0
-   xor ax,ax
-   push message
-   call PRINT_STRING_AT
-   
    pop dx
    pop ax
    ret
@@ -143,7 +137,41 @@ DRAW_WINDOW_FRAME:
    mov byte [CHANGECHARACTER],0
    
    ret
-   
+
+
+DRAWFILLED_WINDOWTEXT:
+	push bp
+	mov bp,sp
+	push si
+	push bx
+	push cx
+	push dx
+	
+	call DRAWFILLED_WINDOW ; parameters passed in
+	
+	
+	mov [temporary1],cx
+	sub cx,bx
+	shr cx,1
+	mov bx,[temporary1]
+	sub bx,cx
+	add ax,1
+	mov si,[bp + 4]
+	push word [current_color]
+	mov dx,[shadow_color]
+	mov [current_color],dx
+	push si
+	call PRINT_STRING_AT
+
+	pop word [current_color]
+	
+	sub ax,1
+	pop dx
+	pop cx
+	pop bx
+	pop si
+	pop bp
+	ret
    
    
 DRAWFILLED_WINDOW:
@@ -151,7 +179,7 @@ DRAWFILLED_WINDOW:
 	push bx ; y1
 	push dx ; x2
 	push cx ; y2
-
+	; parameters passed in
     
 	WINDOW_OR_RECTANGLE
 	
@@ -174,16 +202,14 @@ DRAWFILLED_WINDOW:
 
 	
 	
-	mov cx, [temporary_color]
-	
-	mov [slowTemporary1], cx
+	push word [temporary_color]
+
 	mov cx, [shadow_color]
 	mov [temporary_color], cx
 	
 	call CLEAR_REGION
     
-    mov cx, [slowTemporary1]
-	mov [temporary_color], cx
+    pop word [temporary_color]
 	
 	pop cx
     pop dx
@@ -269,11 +295,8 @@ DRAWHORIZONTALLINE:
 	push dx
 	
 	
-	mov cx,[cursor_y]
-	mov [temporary2], cx
-	
-	mov cx,[cursor_x]
-	mov [temporary3], cx
+	push word [cursor_y]
+	push word [cursor_x]
 	
 	mov word [cursor_x], 0
     mov word [cursor_y], 0
@@ -287,7 +310,7 @@ DRAWHORIZONTALLINE:
 	cmp dx,[resolutionModeX]
 	jg .breaks
 	mov cx, dx
-	CURSOR_POSITION
+	call CURSOR_POSITION
 	
 	mov di, [cursor_position]
 	CHANGECOLOR_IFTRUE
@@ -295,12 +318,8 @@ DRAWHORIZONTALLINE:
 	rep stosw
 	
 	.breaks:
-	
-	mov cx,[temporary2]
-	mov [cursor_y], cx
-	
-	mov cx,[temporary3]
-	mov [cursor_x], cx
+	pop word [cursor_x]
+	pop word [cursor_y]
 	
 	
 	pop dx
@@ -311,18 +330,15 @@ DRAWHORIZONTALLINE:
     ret
 	
 
-DRAWVERTICALLINE:
+DRAWVERTICALLINE: ; the variant code is bad i would suggest not to use it
     push ax
 	push bx
 	push cx
 	push dx
 	push di
 	
-	mov cx,[cursor_y]
-	mov [temporary2], cx
-	
-	mov cx,[cursor_x]
-	mov [temporary3], cx
+	push word [cursor_y]
+	push word [cursor_x]
 	
 	mov word [cursor_x], 0
     mov word [cursor_y], 0
@@ -337,7 +353,7 @@ DRAWVERTICALLINE:
 	cmp dx,[NUMBERSCROLL]
 	jg .breaks
 	mov cx, dx
-	CURSOR_POSITION
+	call CURSOR_POSITION
 	
 	mov di, [cursor_position]
 	mov al, [CHARACTER_NUMBER2]
@@ -371,10 +387,6 @@ DRAWVERTICALLINE:
 	dec cx
 	add di,158
     jmp .loop
-
-	
-		
-	
 	
 	.breaks:
 
@@ -394,11 +406,8 @@ DRAWVERTICALLINE:
     stosw
 
     .jmp4:
-	mov cx,[temporary2]
-	mov [cursor_y], cx
-	
-	mov cx,[temporary3]
-	mov [cursor_x], cx
+	pop word [cursor_x]
+	pop word [cursor_y]
 	
 	mov byte [CHARACTER_NUMBER],196
 	
@@ -423,7 +432,8 @@ DRAWSMILE:
    add ax, 2
    call SETPIXEL ; draw eye
    
-   
+   ; below draw the face
+	
    xor cx,cx
    
    sub ax, 3
@@ -451,8 +461,6 @@ DRAWSMILE:
    dec bx
    jmp .loop2
    
-   ; below draw the face
-   
    .breaks:
    
    pop cx
@@ -471,11 +479,8 @@ SETPIXEL:
    
    
    
-   mov cx, [cursor_x]
-   mov [temporary1], cx
-   
-   mov cx, [cursor_y]
-   mov [temporary2], cx
+   push word [cursor_y]
+   push word [cursor_x]
    
    mov word [cursor_x], 0
    mov word [cursor_y], 0
@@ -483,7 +488,7 @@ SETPIXEL:
    add [cursor_x], ax
    add [cursor_y], bx
    
-   CURSOR_POSITION
+   call CURSOR_POSITION
    
    mov di, [cursor_position]
    
@@ -491,11 +496,8 @@ SETPIXEL:
    
    stosw
    
-   mov cx, [temporary1]
-   mov [cursor_x],cx
-   
-   mov cx, [temporary2]
-   mov [cursor_y],cx
+   pop word [cursor_x]
+   pop word [cursor_y]
    
    pop cx
    pop di

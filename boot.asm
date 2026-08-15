@@ -2,7 +2,7 @@ BOOT:
     push ax
     push bx
     push cx
-
+    
     SETCOLOR 0x30
 
     mov al, 0XFF

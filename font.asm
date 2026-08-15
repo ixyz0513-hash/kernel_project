@@ -10,8 +10,6 @@ FONT_RENDERER:
     push di
     push si
 
-    mov cx,1
-
     mov ax, [bp + 4]
     mov bx, 8 ; access the ascii char
 

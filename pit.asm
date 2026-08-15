@@ -1,4 +1,7 @@
-global PIT_HANDLER
+CHANNEL_0 equ 0x40
+CHANNEL_2 equ 0x42
+CHANNEL_WRITE_0_2 equ 0x43
+SYSTEM_PORT_B equ 0x61
 
 PIT_HANDLER:
     push ax
@@ -34,10 +37,7 @@ PIT_HANDLER:
 
     .equal:
     mov byte [CHECK_STOPWATCH],0
-    mov al, 0XFF
-    mov bl, 0xFF
-    mov cx, 10
-    call BEEP
+    call NORMAL_SOUND
 
     .jmp:
     popf
@@ -97,7 +97,7 @@ BEEP:
 
     call PIT_SETUP
 
-    
+    ; parameters by the user
     call SOUND
     
     mov ax,cx
@@ -160,7 +160,7 @@ WAIT_TICKS:
     mov bx, 100
     sub bx,ax
     sti
-
+    
     .wait:
     cmp word [SYSTEM_TICKS], bx
     hlt
@@ -168,7 +168,6 @@ WAIT_TICKS:
 
     add ax, word [SYSTEM_TICKS]
 
-    
     .loop:
     cmp ax, word [SYSTEM_TICKS]
     hlt

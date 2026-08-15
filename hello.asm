@@ -1,5 +1,5 @@
-[bits 16]
-[org 0x7c00]
+bits 16
+org 0x7c00
 
 
 start:
@@ -42,74 +42,76 @@ dw 0xAA55
 
 
 sector2:
-   cld
-   cli
-   xor ax,ax
-   mov ds,ax
-   mov ax,0x9000
-   mov ss,ax
-   mov ax, 0xB800
-   mov es,ax
-   mov sp, 0x1000
-   xor ax,ax
-   xor bx,bx
-   xor cx,cx
-   xor dx,dx
-   xor di,di
-   xor si,si
-   sti
-   MASK_KEYBOARD
+  cld
+  cli
+  xor ax,ax
+  mov ds,ax
+  mov ax,0x9000
+  mov ss,ax
+  mov ax, 0xB800
+  mov es,ax
+  mov sp, 0x1000
+  xor ax,ax
+  xor bx,bx
+  xor cx,cx
+  xor dx,dx
+  xor di,di
+  xor si,si
+  sti
+  MASK_KEYBOARD
 
-   call START_UP_PIC
-   call VECTOR_TABLE_SETUP
-   call SELECT_CHANNEL_0
-   call SELECT_CHANNEL_2
+  call START_UP_PIC
+  call VECTOR_TABLE_SETUP
+  call SELECT_CHANNEL_0
+  call SELECT_CHANNEL_2
 
-   call ENABLE16_COLORSBACKGROUND
+  call ENABLE16_COLORSBACKGROUND
 
-   call BOOT
+  call BOOT
    
+  SETCOLOR 0x7E
+  call SCROLLDOWN
+  call SPLIT_SCREEN
    
-   SETCOLOR 0x7E
-   call SCROLLDOWN
-   call SPLIT_SCREEN
-   
-   VERTRET_CHECK
-   call DISABLE_MOUSE
-   
-   call NEWLINE
-   VERTRET_CHECK
-   
-   call CHECK_KEYBOARD
-   VERTRET_CHECK
-   
-   
-   
-   mov al, 1
-   mov bl, 12
-   call CHANGEUNDERLINE
+  call BAT
 
-   INTRO
-   call CURSOR_GO
 
-   call NEWLINECLI
+  call NEWLINE
+  
+  call CHECK_CONTROLER 
+   
+  mov al, 1
+  mov bl, 12
+  call CHANGEUNDERLINE
+
+  INTRO
+  call CURSOR_GO
+
+  call NEWLINECLI
    
    
-   mov word [cursor_x],3
-   mov word [string_length],0 ; dont know why but it bugs out so cursor_x is at 4 maybe some character is typed before it masks the keyboard? but im just going to do this
-   call CURSOR_GO
+  mov word [cursor_x],3
+  mov word [string_length],0 ; dont know why but it bugs out so cursor_x is at 4 maybe some character is typed before it masks the keyboard? but im just going to do this
+  call CURSOR_GO
 
-   mov word [SYSTEM_TICKS],0
-   mov word [SYSTEM_SECONDS],0
+  mov word [SYSTEM_TICKS],0
+  mov word [SYSTEM_SECONDS],0
 
-   VERTRET_CHECK
-   call DISPLAY_TIME
-   UN_MASK_EVERYTHING
+  call DISPLAY_TIME
+  UN_MASK_EVERYTHING
 
-   sti
-   .finish:
-   hlt
-   jmp .finish
+  mov ax,20
+  mov bx,10
+  mov cx,13
+  mov dx,30
+  push val2
+  call CREATE_BUTTON
+   
+  sti
+   
+  .finish:
+  hlt
+  jmp .finish
 
 
 
@@ -130,7 +132,9 @@ sector2:
 
 %include "cli.asm"
 
-%include "ps2.asm"
+%include "keyboard.asm"
+
+%include "mouse.asm"
 
 %include "pic.asm"
 
@@ -143,6 +147,12 @@ sector2:
 %include "visuals.asm"
 
 %include "math.asm"
+
+%include "sounds.asm"
+
+%include "utilities.asm"
+
+%include "button.asm"
 
 %include "variables.asm"
 	

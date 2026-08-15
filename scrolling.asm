@@ -1,3 +1,7 @@
+ADDRESS_HIGH_START equ 0x0C
+ADDRESS_LOW_START equ 0x0D
+
+
 SCROLLDOWN:
     cli
     push cx
