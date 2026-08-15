@@ -56,9 +56,24 @@ if($null -ne $cmd1 -and $null -ne $cmd2)
 
     if($LASTEXITCODE -eq 0) 
     {
-        qemu-system-i386 -machine pc-i440fx-resolute,pcspk-audiodev=snd0 `
-	    -drive format=raw,file=hello.bin `
-	    -audiodev pa,id=snd0 
+        if($IsLinux) 
+        {
+            qemu-system-i386 -machine pc-i440fx-resolute,pcspk-audiodev=snd0 `
+	        -drive format=raw,file=hello.bin `
+	        -audiodev pa,id=snd0 
+        }
+        elseif($IsMacOS) 
+        {
+            qemu-system-i386 -machine pc-i440fx-resolute,pcspk-audiodev=snd0 `
+	        -drive format=raw,file=hello.bin `
+	        -audiodev coreaudio,id=snd0 
+        }
+        elseif($IsWindows) 
+        {
+            qemu-system-i386 -machine pc-i440fx-resolute,pcspk-audiodev=snd0 `
+	        -drive format=raw,file=hello.bin `
+	        -audiodev dsound,id=snd0 
+        }
     }
 
     else 
