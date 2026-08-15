@@ -99,7 +99,7 @@ sector2:
 
   call DISPLAY_TIME
   UN_MASK_EVERYTHING
-
+  
   mov ax,20
   mov bx,10
   mov cx,13
