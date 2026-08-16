@@ -26,6 +26,7 @@ if($null -eq $cmd1)
     elseif($IsWindows) 
     {
         winget install NASM.NASM
+		$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
     }
 }
 
@@ -45,6 +46,7 @@ if($null -eq $cmd2)
     elseif($IsWindows) 
     {
         winget install SoftwareFreedomConservancy.QEMU
+		$env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
     }
 }
 
