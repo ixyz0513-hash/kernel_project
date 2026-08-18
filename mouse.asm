@@ -1,5 +1,6 @@
 mouse_char db 0x0
 mouse_color db 0x7E
+mouse_left db 0 ; if one left click happened
 
 
 MOUSE_HANDLER:
@@ -8,6 +9,9 @@ MOUSE_HANDLER:
     push bx
     push cx
     pushf
+    
+    
+    mov byte [mouse_left],0
 
     call CALCULATE_MOUSE_POSITION
     mov al, [mouse_char]
@@ -18,13 +22,17 @@ MOUSE_HANDLER:
     xor ax,ax
     call POLL_DATA_PORT
     
+    test al,0x1 ; checking left click
+    jz .jmp
+    mov byte [mouse_left],1
 
+    .jmp:
     push ax
-    and al,0x10
-    mov cl,al
+    and al,0x10 ; checking sign bit for x
+    mov cl,al ; storing it
     pop ax
-    and al,0x20
-    mov ch,al
+    and al,0x20 ; checking sign bit for y
+    mov ch,al ; storing it
 
     call POLL_DATA_PORT
     cmp cl,0x10
@@ -55,10 +63,10 @@ MOUSE_HANDLER:
 
     mov al, byte [es:di + 1]
     cmp al,0x30
-    je .jmp
+    je .jmp5
     mov byte [mouse_color],al
 
-    .jmp:
+    .jmp5:
     mov al, byte [es:di]
     mov byte [mouse_char],al
 
@@ -109,7 +117,7 @@ ENABLE_DATA_REPORTING:
     ret
 
 
-COUNT_MODES:
+COUNT_MODES: ; doesnt work in qemu i suppose
     xor bh,bh
 
     call ENABLE_WRITING_MOUSE
@@ -127,8 +135,8 @@ COUNT_MODES:
     xor bx,bx
     xor ax,ax
     ret
-
-SAMPLE_RATE:
+ 
+SAMPLE_RATE: ; doesnt work in qemu i suppose
     call ENABLE_WRITING_MOUSE
     mov al,0xF3
     call CAN_WRITE_TO
@@ -209,10 +217,6 @@ BAT:
     call KERNEL_PANIC
 
     .breaks:
-    mov bl,0x0
-    call COUNT_MODES
-    mov bl,40
-    call SAMPLE_RATE
     call ENABLE_DATA_REPORTING
     xor ax,ax
     xor si,si
@@ -235,28 +239,28 @@ POLL_DATA_PORT:
 
 
 DISABLE_MOUSE:
-   push ax
+    push ax
    
-   call CHECK_OUTPUT_BUFFER
+    call CHECK_OUTPUT_BUFFER
    
-   mov al, 0xA7
-   out CONTROL_STATUS_REGISTER, al
+    mov al, 0xA7
+    out CONTROL_STATUS_REGISTER, al
    
-   pop ax
-   ret
+    pop ax
+    ret
    
    
 
 ENABLE_MOUSE:
-   push ax
+    push ax
    
-   call CHECK_OUTPUT_BUFFER
+    call CHECK_OUTPUT_BUFFER
   
-   mov al, 0xA8
-   out CONTROL_STATUS_REGISTER, al
+    mov al, 0xA8
+    out CONTROL_STATUS_REGISTER, al
    
-   pop ax
-   ret
+    pop ax
+    ret
 
 
 CALCULATE_MOUSE_POSITION:

@@ -20,7 +20,6 @@ PIT_HANDLER:
 
     cmp byte [IF_BOOT_ENDED],0
     je .breaks
-    VERTRET_CHECK
     call DISPLAY_TIME
 
     

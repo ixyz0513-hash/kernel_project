@@ -48,57 +48,17 @@ sector2:
   mov ds,ax
   mov ax,0x9000
   mov ss,ax
-  mov ax, 0xB800
+  mov ax,0xB800
   mov es,ax
-  mov sp, 0x1000
+  mov sp,0x1000
   xor ax,ax
   xor bx,bx
   xor cx,cx
   xor dx,dx
   xor di,di
   xor si,si
-  sti
-  MASK_KEYBOARD
-
-  call START_UP_PIC
-  call VECTOR_TABLE_SETUP
-  call SELECT_CHANNEL_0
-  call SELECT_CHANNEL_2
-
-  call ENABLE16_COLORSBACKGROUND
 
   call BOOT
-   
-  SETCOLOR 0x7E
-  call SCROLLDOWN
-  call SPLIT_SCREEN
-   
-  call BAT
-
-
-  call NEWLINE
-  
-  call CHECK_CONTROLER 
-   
-  mov al, 1
-  mov bl, 12
-  call CHANGEUNDERLINE
-
-  INTRO
-  call CURSOR_GO
-
-  call NEWLINECLI
-   
-   
-  mov word [cursor_x],3
-  mov word [string_length],0 ; dont know why but it bugs out so cursor_x is at 4 maybe some character is typed before it masks the keyboard? but im just going to do this
-  call CURSOR_GO
-
-  mov word [SYSTEM_TICKS],0
-  mov word [SYSTEM_SECONDS],0
-
-  call DISPLAY_TIME
-  UN_MASK_EVERYTHING
   
   mov ax,20
   mov bx,10
@@ -106,8 +66,6 @@ sector2:
   mov dx,30
   push val2
   call CREATE_BUTTON
-   
-  sti
    
   .finish:
   hlt

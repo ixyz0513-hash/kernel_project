@@ -4,7 +4,7 @@ kernel_version db 'version kernel 0.2',0
 message db 'Unkown command',0
 arrow db '-->',0
 bootmessage db 'Hello this is the kernel hahaha :)',0
-message2 db 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',0
+message2 db 'type help',0
 
 
 debugval_good db 'Good',0

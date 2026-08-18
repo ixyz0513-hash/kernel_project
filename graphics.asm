@@ -1,28 +1,41 @@
 CLEAR_SCREEN:
-      push ax
-	  push bx
-	  push cx
-	  push di
+	cli
+    push ax
+	push bx
+	push cx
+	push di
 	  
-	  xor di,di
-	  mov bx, [resolutionModeX]
-	  mov ax, [NUMBERSCROLL]
-	  mov [temporary1], ax
-	  add word [temporary1], 7
-	  mov ax, [temporary1]
-	  mul bx
-	  mov bx,ax
-	  mov cx, bx
-	  mov al, 0x0
-	  mov ah, [current_color]
+	xor di,di
+	mov bx, [resolutionModeX]
+	mov ax, [NUMBERSCROLL]
+	mov [temporary1], ax
+	add word [temporary1], 7
+	mov ax, [temporary1]
+	mul bx
+	mov bx,ax
+	mov cx, bx
+	mov al, 0x0
+	mov ah, [current_color]
 	  
-	  rep stosw
+	rep stosw
+
+	cmp byte [IF_BOOT_ENDED], 1
+	jne .breaks
+
+	call CALCULATE_MOUSE_POSITION
+    mov di, [cursor_position]
+	mov ah, 0x30
+    mov al, 0x30
+	
+    stosw
 	  
-	  pop di
-	  pop cx
-	  pop bx
-	  pop ax
-	  ret
+	.breaks:
+	pop di
+	pop cx
+	pop bx
+	pop ax
+	sti
+	ret
 
 
 
@@ -62,34 +75,34 @@ DRAW_SHADOW:
 
 
 ENABLE16_COLORSBACKGROUND:
-     push dx
-	 push ax
+    push dx
+	push ax
 	 
-	 cli
+	cli
      
-	 mov dx, FLIP_ATTRIBUTE
-	 in al, dx
-	 xor al,al
+	mov dx, FLIP_ATTRIBUTE
+	in al, dx
+	xor al,al
 	 
-	 mov dx, ATTRIBUTE_DATA_INDEX
-	 mov al,0x10
-	 out dx,al
+	mov dx, ATTRIBUTE_DATA_INDEX
+	mov al,0x10
+	out dx,al
 	 
-	 mov dx, ATTRIBUTE_READ
-	 in al,dx
-	 and al, 247
+	mov dx, ATTRIBUTE_READ
+	in al,dx
+	and al, 247
 	 
-	 mov dx, ATTRIBUTE_DATA_INDEX
-	 out dx,al
+	mov dx, ATTRIBUTE_DATA_INDEX
+	out dx,al
 	 
-	 mov al, 0x20
-     out dx, al
+	mov al, 0x20
+    out dx, al
 	 
-	 sti
+	sti
 	 
-     pop ax
-	 pop dx
-     ret
+    pop ax
+	pop dx
+    ret
 
 
 
@@ -468,7 +481,7 @@ DRAWSMILE:
    pop ax
    
    ret
-
+   
 
 
 SETPIXEL:

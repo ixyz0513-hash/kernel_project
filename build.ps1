@@ -8,53 +8,30 @@ else
 {
     $cmd1 = Get-Command nasm -ErrorAction SilentlyContinue
     $cmd2 = Get-Command qemu-system-i386 -ErrorAction SilentlyContinue
-}
+}       
 
 if($null -eq $cmd1)
 {
-    Write-host "installing nasm"
-    if($IsLinux) 
-    {
-        sudo apt install nasm
-    }
-
-    elseif($IsMacOS) 
-    {
-        brew install nasm
-    }
-
-    elseif($IsWindows) 
-    {
-        winget install NASM.NASM
-    }
+    Write-Error "Need to install nasm"
 }
 
 if($null -eq $cmd2) 
 {
-    Write-host "installing qemu"
-    if($IsLinux) 
-    {
-        sudo apt install qemu-system-x86
-    }
-
-    elseif($IsMacOS) 
-    {
-        brew install qemu
-    }
-
-    elseif($IsWindows) 
-    {
-        winget install SoftwareFreedomConservancy.QEMU
-    }
+    Write-Error "Need to install qemu"
 }
 
 
 if($null -ne $cmd1 -and $null -ne $cmd2) 
 {
-    Write-host "compiling"
+    Write-host "Compiling" -ForegroundColor Yellow
     nasm -f bin hello.asm -o hello.bin
 
-    if($LASTEXITCODE -eq 0) 
+    if($LASTEXITCODE) 
+    {
+        Write-Error "ERROR"
+    }
+
+    else 
     {
         if($IsLinux) 
         {
@@ -74,10 +51,5 @@ if($null -ne $cmd1 -and $null -ne $cmd2)
 	        -drive format=raw,file=hello.bin `
 	        -audiodev dsound,id=snd0 
         }
-    }
-
-    else 
-    {
-        Write-Error "ERROR"
     }
 }

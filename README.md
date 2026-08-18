@@ -1,18 +1,13 @@
-# How to install powershell
-
-## Ubuntu
-`sudo snap install powershell --classic`
-
-## Macos
-`brew install powershell`
-
-## Windows
-`winget install --id Microsoft.PowerShell --source winget`
 
 
 # How to build
 
-## Ubuntu/Macos
+## What you need
+powershell 7\
+nasm\
+qemu-system-i386    
+
+## Linux/Macos
 `pwsh ./build.ps1`
 
 ## Windows
@@ -22,12 +17,19 @@ if inside powershell `./build.ps1`
 first you click left click to start it\
 do not click around with the mouse too fast or it will bug out\
 do not type and move with the mouse\
-the mouse is very buggy for now i will fix it soon
+if the mouse bugs out the keyboard goes with it ill fix it soon\
 
 ## Commands
 calc |number| |operator| |number|\
-only +,-,*,/\
+operators +,-,*,/\
+example `calc 5 + 5` outputs 10 one space between every number and operator\
 stopwatch |number|\
+example `stopwatch 5` after 5 seconds it beeps\
 echo |text|\
-thats all!
+example `echo eee` outputs eee to the screen\
+
+
+## How the cli works
+this cli that i made works for example like this\
+if you type `beep` its correct but when you type it like this `beeps` its still correct you need to only type the `beep` part so the cli knows its correct
 
